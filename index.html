@@ -1,0 +1,42 @@
+<html> 
+
+    <body>
+        <input id="sourseText" type="text">
+        <input id="encodedText" readonly type="text">
+        <input id="decodedText" readonly type="text">
+
+        <button id="submitButton">Encode</button>
+    </body>
+
+    <script>
+        document.getElementById("submitButton").addEventListener('click', async () => {
+            const sourseText = document.getElementById("sourseText").value;
+
+            const encodeResponse = await fetch('http://localhost:3000/encrypt', {
+                method: 'POST',
+                body: JSON.stringify({ text: sourseText }),
+                headers: {
+                'Content-Type': 'application/json'
+                },
+            });
+
+            const {result: encodedText } = await encodeResponse.json();
+
+            const textbox = document.getElementById("encodedText");
+            textbox.value = encodedText;
+
+            const decodeResponse = await fetch('http://localhost:3000/decrypt', {
+                method: 'POST',
+                body: JSON.stringify({ text: encodedText }),
+                headers: {
+                'Content-Type': 'application/json'
+                },
+            });
+
+            const {result: decodedText } = await decodeResponse.json();
+
+            const decodedTextbox = document.getElementById("decodedText");
+            decodedTextbox.value = decodedText;
+        })
+    </script>
+</html>
